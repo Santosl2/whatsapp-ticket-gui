@@ -16,6 +16,10 @@ class WhatsappBaileys implements IWhatsapp {
       }
     | undefined = undefined;
 
+  get client(): WASocket {
+    return this.sock;
+  }
+
   constructor() {
     this.init();
   }
@@ -62,12 +66,6 @@ class WhatsappBaileys implements IWhatsapp {
       } else if (connection === "open") {
         console.log("opened connection");
       }
-    });
-
-    sock.ev.on("messages.upsert", async (m) => {
-      console.log("message received", m.messages[0].message?.conversation);
-
-      console.log("replying to", m.messages[0].key.remoteJid);
     });
   }
 }
