@@ -21,7 +21,7 @@ class OnReceiveMessage implements ICustomEvent {
       const data = {
         message: messageBody,
         from: messageData.key.remoteJid,
-        pushName: messageData.pushName,
+        pushName: messageData.pushName ?? "No name",
         fromMe: messageData.key.fromMe ?? false,
         timestamp: messageData.messageTimestamp,
       };
