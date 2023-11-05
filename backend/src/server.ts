@@ -3,8 +3,13 @@ import { WhatsappLib as whatsappLib } from "./lib/Whatsapp/Index";
 
 import http from "http";
 import { WebSocketLib } from "./lib/WebSocket";
+import { messagesRoutes } from "./routes/messages.routes";
+import "@database/index";
 
 const expressApp = express();
+expressApp.use(express.json());
+expressApp.use("/messages", messagesRoutes);
+
 const app = http.createServer(expressApp);
 
 app.listen(3333, async () => {

@@ -3,6 +3,9 @@ import { IWebSocket } from "../interfaces";
 import { ICustomEvent } from "./interfaces";
 import { IWhatsapp } from "../../Whatsapp/interfaces";
 import { Server as SocketIoServer } from "socket.io";
+import { prisma } from "@database/index";
+import { CreateMessageUseCase } from "@useCase/create-message-use-case";
+import { ICreateMessageDTO } from "dto/create-message-dto";
 
 class OnReceiveMessage implements ICustomEvent {
   constructor(
@@ -16,17 +19,21 @@ class OnReceiveMessage implements ICustomEvent {
 
     whatsappClient.ev.on("messages.upsert", async (m) => {
       const messageData = m.messages[0];
-      const messageBody = messageData.message?.conversation;
+      const fromMe = messageData.key.fromMe ?? false;
+      const messageBody = messageData.message?.extendedTextMessage?.text;
 
-      const data = {
-        message: messageBody,
-        from: messageData.key.remoteJid,
+      const data: ICreateMessageDTO = {
+        id: messageData.key.id!,
+        message: messageBody ?? "No Body",
+        from: messageData.key.remoteJid ?? "No from",
         pushName: messageData.pushName ?? "No name",
-        fromMe: messageData.key.fromMe ?? false,
-        timestamp: messageData.messageTimestamp,
+        fromMe,
+        timestamp: Number(messageData.messageTimestamp ?? 0),
       };
 
-      socket?.emit("message", data);
+      CreateMessageUseCase.execute(data);
+
+      socket?.emit("receive-message", data);
     });
   }
 }
