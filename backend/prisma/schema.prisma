@@ -23,7 +23,7 @@ model Contacts {
 }
 
 model Messages {
-  id String @unique
+  id String @id @unique
 
   contactId Int?
   contact   Contacts? @relation(fields: [contactId], references: [id], onDelete: SetNull)
