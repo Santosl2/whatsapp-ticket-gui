@@ -1,9 +1,9 @@
 import { prisma } from "@database/index";
-import { Contacts } from "@prisma/client";
+import { Contacts, Messages } from "@prisma/client";
 import { ICreateMessageDTO } from "dto/create-message-dto";
 
 class CreateMessageUseCaseClass {
-  private async findContact(name: string): Promise<boo> {
+  private async findContact(name: string): Promise<Contacts> {
     const contact = await prisma.contacts.findFirst({
       where: {
         name,
@@ -38,12 +38,12 @@ class CreateMessageUseCaseClass {
     message,
     pushName,
     timestamp,
-  }: ICreateMessageDTO): Promise<unknown> {
+  }: ICreateMessageDTO): Promise<Messages> {
     let contact: Contacts = {} as Contacts;
 
     if (!fromMe) contact = await this.tryInsertContact(pushName, from);
 
-    await prisma.messages.create({
+    const messageInserted = await prisma.messages.create({
       data: {
         id,
         message,
@@ -51,6 +51,8 @@ class CreateMessageUseCaseClass {
         contactId: contact?.id,
       },
     });
+
+    return messageInserted;
   }
 }
 
