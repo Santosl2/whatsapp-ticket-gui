@@ -22,6 +22,8 @@ class OnReceiveMessage implements ICustomEvent {
       const fromMe = messageData.key.fromMe ?? false;
       const messageBody = messageData.message?.extendedTextMessage?.text;
 
+      if (messageData.key.remoteJid === "status@broadcast") return;
+
       const data: ICreateMessageDTO = {
         id: messageData.key.id!,
         message: messageBody ?? "No Body",
