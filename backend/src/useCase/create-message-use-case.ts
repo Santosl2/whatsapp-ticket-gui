@@ -3,7 +3,7 @@ import { Contacts, Messages } from "@prisma/client";
 import { ICreateMessageDTO } from "dto/create-message-dto";
 
 class CreateMessageUseCaseClass {
-  private async findContact(name: string): Promise<Contacts> {
+  private async findContact(name: string): Promise<Contacts | null> {
     const contact = await prisma.contacts.findFirst({
       where: {
         name,
