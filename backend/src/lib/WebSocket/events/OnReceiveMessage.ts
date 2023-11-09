@@ -20,7 +20,9 @@ class OnReceiveMessage implements ICustomEvent {
     whatsappClient.ev.on("messages.upsert", async (m) => {
       const messageData = m.messages[0];
       const fromMe = messageData.key.fromMe ?? false;
-      const messageBody = messageData.message?.extendedTextMessage?.text;
+      const messageBody =
+        messageData.message?.extendedTextMessage?.text ??
+        messageData.message?.conversation;
 
       if (messageData.key.remoteJid === "status@broadcast") return;
 
