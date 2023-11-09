@@ -1,6 +1,9 @@
 import { prisma } from "@database/index";
 import { Contacts, Messages } from "@prisma/client";
+import { CreateMessageSchemaDTO } from "@schemas/create-message-schema";
+import { proto } from "@whiskeysockets/baileys";
 import { ICreateMessageDTO } from "dto/create-message-dto";
+import { whatsappLib } from "../server";
 
 class CreateMessageUseCaseClass {
   private async findContact(name: string): Promise<Contacts | null> {
@@ -29,6 +32,20 @@ class CreateMessageUseCaseClass {
     });
 
     return newContact;
+  }
+
+  async sendMessageSocket({
+    jid,
+    message,
+  }: CreateMessageSchemaDTO): Promise<proto.WebMessageInfo | undefined> {
+    try {
+      const messageSent = await whatsappLib.sock.sendMessage(jid, {
+        text: message,
+      });
+      return messageSent;
+    } catch {
+      return {} as proto.WebMessageInfo;
+    }
   }
 
   async execute({

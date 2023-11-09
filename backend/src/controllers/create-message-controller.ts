@@ -1,12 +1,17 @@
 import { Request, Response } from "express";
 import { CreateMessageSchemaDTO } from "@schemas/create-message-schema";
-import SchemaValidationError from "errors/schema-validator-error";
+import { CreateMessageUseCase } from "@useCase/create-message-use-case";
 
 class CreateMessageControllerClass {
   async index(req: Request, res: Response): Promise<Response> {
-    const { message } = req.body as CreateMessageSchemaDTO;
+    const { message, jid } = req.body as CreateMessageSchemaDTO;
 
-    return res.json({ message: "Hello World" });
+    const data = await CreateMessageUseCase.sendMessageSocket({
+      message,
+      jid,
+    });
+
+    return res.json({ message: data });
   }
 }
 export const CreateMessageController = new CreateMessageControllerClass();
