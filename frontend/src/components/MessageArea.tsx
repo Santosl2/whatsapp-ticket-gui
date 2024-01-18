@@ -6,7 +6,7 @@ import { HttpService } from "@/shared/services/HttpService";
 import { IMessageResult } from "@/shared/interfaces";
 
 export function MessageArea() {
-  const { currentChatId } = useChat();
+  const { currentChatId, currentUserName } = useChat();
 
   const { data } = useQuery({
     queryKey: ["messages", currentChatId],
@@ -19,12 +19,10 @@ export function MessageArea() {
 
   if (!currentChatId) return <></>;
 
-  console.log(data, currentChatId);
-
   return (
     <section className="bg-header-color relative flex flex-col flex-1">
       <Header>
-        <h1>Brad Pitty</h1>
+        <h1>{currentUserName}</h1>
       </Header>
       <div className="flex flex-1 flex-col-reverse p-4">
         <div className="max-h-[700px] flex flex-col gap-2 overflow-auto z-10 relative">

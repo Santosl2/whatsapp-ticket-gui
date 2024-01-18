@@ -9,7 +9,18 @@ interface IMessageMapperResult {
   id: string;
   message: string;
   isFromMe: boolean;
+  name?: string;
   receivedAt: number | null;
+}
+[];
+
+export interface ILastMessageResult {
+  id: number;
+  contact: {
+    name: string;
+    phone: string;
+  } | null;
+  lastMessage: string;
 }
 [];
 
@@ -119,17 +130,37 @@ class MessageUseCaseClass {
       where: {
         chatId,
       },
+      select: {
+        id: true,
+        message: true,
+        contactId: true,
+        receivedAt: true,
+        contact: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+
       orderBy: {
         receivedAt: "asc",
       },
     });
 
     const messagesMapper = messages.map((message) => {
-      const { id, message: messageBody, receivedAt, contactId } = message;
+      const {
+        id,
+        message: messageBody,
+        receivedAt,
+        contactId,
+        contact,
+      } = message;
 
       return {
         id,
         message: messageBody,
+        name: contact?.name,
         isFromMe: !contactId,
         receivedAt,
       };
@@ -138,7 +169,7 @@ class MessageUseCaseClass {
     return messagesMapper;
   }
 
-  async getLastMessages(): Promise<LastMessages[]> {
+  async getLastMessages(): Promise<ILastMessageResult[]> {
     const lastMessages = await prisma.lastMessages.findMany({
       select: {
         id: true,

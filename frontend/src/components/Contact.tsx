@@ -2,15 +2,16 @@
 import { useChat } from "@/shared/store/ChatStore";
 
 interface IContact {
-  username: String;
+  username: string;
   lastMessage: String;
   id: number;
 }
 
 export function Contact({ lastMessage, username, id }: IContact) {
-  const { setCurrentChatId } = useChat();
+  const { setCurrentChatId, setCurrentUserName } = useChat();
   const handleClick = () => {
     setCurrentChatId(id);
+    setCurrentUserName(username);
   };
 
   return (
