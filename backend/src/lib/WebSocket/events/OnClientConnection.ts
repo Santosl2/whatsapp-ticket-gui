@@ -1,7 +1,6 @@
 import { WASocket } from "@whiskeysockets/baileys";
 import { IWebSocket } from "../interfaces";
 import { ICustomEvent } from "./interfaces";
-import { IWhatsapp } from "../../Whatsapp/interfaces";
 import { Server as SocketIoServer } from "socket.io";
 
 class OnClientConnection implements ICustomEvent {

@@ -3,8 +3,7 @@ import { IWebSocket } from "../interfaces";
 import { ICustomEvent } from "./interfaces";
 import { IWhatsapp } from "../../Whatsapp/interfaces";
 import { Server as SocketIoServer } from "socket.io";
-import { prisma } from "@database/index";
-import { CreateMessageUseCase } from "@useCase/create-message-use-case";
+import { MessageUseCase } from "@useCase/message-use-case";
 import { ICreateMessageDTO } from "dto/create-message-dto";
 
 class OnReceiveMessage implements ICustomEvent {
@@ -35,7 +34,7 @@ class OnReceiveMessage implements ICustomEvent {
         timestamp: Number(messageData.messageTimestamp ?? 0),
       };
 
-      CreateMessageUseCase.execute(data);
+      MessageUseCase.execute(data);
 
       socket?.emit("receive-message", data);
     });

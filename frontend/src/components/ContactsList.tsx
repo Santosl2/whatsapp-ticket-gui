@@ -1,27 +1,22 @@
-export function ContactsList() {
+import type { ILastMessageResult } from "@/shared/interfaces";
+import { HttpService } from "@/shared/services/HttpService";
+import { Contact } from "./Contact";
+
+export async function ContactsList() {
+  const { messages } = await HttpService.getInstance().get<ILastMessageResult>(
+    "messages/last-messages"
+  );
+
   return (
     <section className="flex-1">
-      <Contact username="Santosl2c" lastMessage="Eu sou o milhor" />
-      <Contact username="Lula" lastMessage="Eu sou um ladrão!" />
-      <Contact username="Bolsonaro" lastMessage="Lula ladrão!" />
-      <Contact
-        username="Jesus"
-        lastMessage="Vinde a mim todos os que estão cansados e sobrecarregados..."
-      />
+      {messages.map((message) => (
+        <Contact
+          id={message.id}
+          key={message.id}
+          username={message?.contact?.name}
+          lastMessage={message.lastMessage}
+        />
+      ))}
     </section>
-  );
-}
-
-interface IContact {
-  username: String;
-  lastMessage: String;
-}
-
-function Contact({ lastMessage, username }: IContact) {
-  return (
-    <div className="flex-1 bg-gray-850 hover:bg-[#2A3942] transition-colors p-4 cursor-pointer">
-      <h3 className="font-bold">{username}</h3>
-      <p className="text-gray-400 truncate">{lastMessage}</p>
-    </div>
   );
 }

@@ -8,8 +8,10 @@ import { WebSocketLib } from "./lib/WebSocket";
 import { messagesRoutes } from "./routes/messages.routes";
 import "@database/index";
 import SchemaValidationError from "errors/schema-validator-error";
+import cors from "cors";
 
 const expressApp = express();
+expressApp.use(cors());
 expressApp.use(express.json());
 expressApp.use("/messages", messagesRoutes);
 

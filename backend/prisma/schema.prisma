@@ -17,7 +17,8 @@ model Contacts {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Message Messages[]
+  Message      Messages[]
+  LastMessages LastMessages[]
 
   @@map("contacts")
 }
@@ -30,9 +31,28 @@ model Messages {
 
   message String
 
+  chatId       Int?
+  lastMessages LastMessages? @relation(fields: [chatId], references: [id], onDelete: SetNull)
+
   receivedAt Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@map("messages")
+}
+
+model LastMessages {
+  id Int @id @default(autoincrement())
+
+  contactId Int?
+  contact   Contacts? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  lastMessage String
+
+  receivedAt Int?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  Messages   Messages[]
+
+  @@map("last_messages")
 }
