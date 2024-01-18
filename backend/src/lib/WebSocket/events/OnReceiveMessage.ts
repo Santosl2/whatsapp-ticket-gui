@@ -33,7 +33,7 @@ class OnReceiveMessage implements ICustomEvent {
         fromMe,
         timestamp: Number(messageData.messageTimestamp ?? 0),
       };
-
+      // TODO saber qual chatId é a mensagem
       MessageUseCase.execute(data);
 
       socket?.emit("receive-message", data);

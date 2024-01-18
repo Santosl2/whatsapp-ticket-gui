@@ -19,11 +19,12 @@ class MessageControllerClass {
   }
 
   async create(req: Request, res: Response): Promise<Response> {
-    const { message, jid } = req.body as CreateMessageSchemaDTO;
+    const { message } = req.body as CreateMessageSchemaDTO["body"];
+    const { chatId } = req.params as CreateMessageSchemaDTO["params"];
 
     const data = await MessageUseCase.sendMessageSocket({
       message,
-      jid,
+      chatId,
     });
 
     return res.json({ message: data });

@@ -7,7 +7,7 @@ import { getMessageSchema } from "@schemas/get-message-schema";
 const messagesRoutes = Router();
 
 messagesRoutes.post(
-  "/",
+  "/:chatId",
   schemaValidatorMiddleware(createMessageSchema),
   MessageController.create
 );

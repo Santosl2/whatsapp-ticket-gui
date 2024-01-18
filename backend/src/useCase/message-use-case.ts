@@ -25,10 +25,17 @@ export interface ILastMessageResult {
 [];
 
 class MessageUseCaseClass {
-  private async findContact(phone: string): Promise<Contacts | null> {
+  private async findContact(phone: string | number): Promise<Contacts | null> {
     const contact = await prisma.contacts.findFirst({
       where: {
-        phone,
+        OR: [
+          {
+            phone: String(phone),
+          },
+          {
+            id: Number.isNaN(Number(phone)) ? undefined : Number(phone),
+          },
+        ],
       },
     });
 
@@ -54,11 +61,27 @@ class MessageUseCaseClass {
   }
 
   async sendMessageSocket({
-    jid,
+    chatId,
     message,
-  }: CreateMessageSchemaDTO): Promise<proto.WebMessageInfo | undefined> {
+  }: CreateMessageSchemaDTO["body"] &
+    CreateMessageSchemaDTO["params"]): Promise<
+    proto.WebMessageInfo | undefined
+  > {
     try {
-      const messageSent = await whatsappLib.sock.sendMessage(jid, {
+      const contact = await this.findContact(chatId);
+
+      if (!contact) return;
+
+      await prisma.lastMessages.update({
+        where: {
+          id: contact.id,
+        },
+        data: {
+          lastMessage: message,
+        },
+      });
+
+      const messageSent = await whatsappLib.sock.sendMessage(contact?.phone, {
         text: message,
       });
       return messageSent;
@@ -85,6 +108,7 @@ class MessageUseCaseClass {
         message,
         receivedAt: timestamp,
         contactId: contact?.id,
+        chatId: contact?.id,
       },
     });
 
@@ -106,6 +130,8 @@ class MessageUseCaseClass {
     lastMessage: string;
     receivedAt: number;
   }) {
+    if (!contactId) return;
+
     await prisma.lastMessages.upsert({
       // @ts-ignore
       where: {

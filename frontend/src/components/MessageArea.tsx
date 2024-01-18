@@ -4,6 +4,7 @@ import { Header } from "./Header";
 import { useQuery } from "@tanstack/react-query";
 import { HttpService } from "@/shared/services/HttpService";
 import { IMessageResult } from "@/shared/interfaces";
+import { SendMessage } from "./SendMessage";
 
 export function MessageArea() {
   const { currentChatId, currentUserName } = useChat();
@@ -33,10 +34,9 @@ export function MessageArea() {
               message={message.message}
             />
           ))}
-
-          <Message isFromMe={false} message="Olá mundo" />
         </div>
       </div>
+      <SendMessage />
       <div className="bg-chat absolute inset-0 opacity-5 "></div>
     </section>
   );
