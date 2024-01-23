@@ -1,8 +1,9 @@
 export interface ICreateMessageDTO {
   id: string;
   message: string;
-  from: string;
+  phone: string;
   pushName: string;
   fromMe: boolean;
   timestamp: number;
+  chatId?: string;
 }

@@ -23,12 +23,15 @@ class OnReceiveMessage implements ICustomEvent {
         messageData.message?.extendedTextMessage?.text ??
         messageData.message?.conversation;
 
-      if (messageData.key.remoteJid === "status@broadcast") return;
+      const remoteJid = messageData.key.remoteJid;
+
+      if (remoteJid === "status@broadcast" || remoteJid?.endsWith("@g.us"))
+        return;
 
       const data: ICreateMessageDTO = {
         id: messageData.key.id!,
         message: messageBody ?? "No Body",
-        from: messageData.key.remoteJid ?? "No from",
+        phone: messageData.key.remoteJid ?? "No phone",
         pushName: messageData.pushName ?? "No name",
         fromMe,
         timestamp: Number(messageData.messageTimestamp ?? 0),
