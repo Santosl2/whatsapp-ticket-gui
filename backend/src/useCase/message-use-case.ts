@@ -98,7 +98,7 @@ class MessageUseCaseClass {
     pushName,
     timestamp,
   }: ICreateMessageDTO): Promise<Messages> {
-    let contact: Contacts = await this.tryInsertContact(pushName, phone);
+    const contact: Contacts = await this.tryInsertContact(pushName, phone);
 
     const messageInserted = await prisma.messages.create({
       data: {

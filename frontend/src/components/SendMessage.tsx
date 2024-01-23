@@ -28,8 +28,6 @@ export function SendMessage() {
 
           inputRef.current.value = "";
           inputRef.current.blur();
-
-          console.log("Send message");
         }
       }}
     />
