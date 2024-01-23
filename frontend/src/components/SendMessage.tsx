@@ -7,13 +7,11 @@ export function SendMessage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { currentChatId } = useChat();
 
-  const { data, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationKey: ["messages", currentChatId],
     mutationFn: (data) =>
       HttpService.getInstance().post(`messages/${currentChatId}`, data),
   });
-
-  console.log(data);
 
   return (
     <input

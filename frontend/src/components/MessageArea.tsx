@@ -1,22 +1,11 @@
 "use client";
-import { useChat } from "@/shared/store/ChatStore";
 import { Header } from "./Header";
-import { useQuery } from "@tanstack/react-query";
-import { HttpService } from "@/shared/services/HttpService";
-import { IMessageResult } from "@/shared/interfaces";
+import type { Message } from "@/shared/interfaces";
 import { SendMessage } from "./SendMessage";
+import { useMessageAreaLogic } from "@/shared/hooks/useMessageAreaLogic";
 
 export function MessageArea() {
-  const { currentChatId, currentUserName } = useChat();
-
-  const { data } = useQuery({
-    queryKey: ["messages", currentChatId],
-    queryFn: () =>
-      HttpService.getInstance().get<IMessageResult>(
-        `messages/${currentChatId}`
-      ),
-    enabled: !!currentChatId,
-  });
+  const { currentChatId, currentUserName, messages } = useMessageAreaLogic();
 
   if (!currentChatId) return <></>;
 
@@ -25,9 +14,9 @@ export function MessageArea() {
       <Header>
         <h1>{currentUserName}</h1>
       </Header>
-      <div className="flex flex-1 flex-col-reverse p-4">
-        <div className="max-h-[700px] flex flex-col gap-2 overflow-auto z-10 relative">
-          {data?.messages.map((message) => (
+      <div className="flex flex-1 flex-col-reverse p-4 overflow-auto">
+        <div className="flex flex-col gap-2 z-10 relative">
+          {messages?.map((message) => (
             <Message
               key={message.id}
               isFromMe={message.isFromMe}
@@ -50,6 +39,7 @@ interface IMessage {
 export function Message({ isFromMe = false, message }: IMessage) {
   const extendedClasses = "self-".concat(isFromMe ? "end" : "start");
   const borderRadius = "rounded-".concat(isFromMe ? "s-md" : "e-md");
+
   return (
     <div
       className={`w-full max-w-md min-h-9 bg-gray-900 p-4 text-white ${extendedClasses} ${borderRadius}`}

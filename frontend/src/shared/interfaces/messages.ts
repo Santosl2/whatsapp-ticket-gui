@@ -9,4 +9,4 @@ interface Message {
   receivedAt: number;
 }
 
-export type { IMessageResult };
+export type { IMessageResult, Message };
