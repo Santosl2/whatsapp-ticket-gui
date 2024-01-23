@@ -19,7 +19,7 @@ class SocketService {
 
   static tryConnectSocket() {
     setTimeout(() => {
-      const connection = io("http://192.168.1.12:3333", {
+      const connection = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
         transports: ["websocket"],
       });
 
